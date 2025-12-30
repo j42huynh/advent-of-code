@@ -46,11 +46,11 @@ func getMaxJoltage(bank string) int {
 
 		maxDigit := -1
 		maxIndex := -1
-		for i, d := range partialBank {
+		for j, d := range partialBank {
 			digit := getInt(string(d))
 			if digit > maxDigit {
 				maxDigit = digit
-				maxIndex = i
+				maxIndex = j
 			}
 		}
 		maxJoltage = maxJoltage*10 + maxDigit
