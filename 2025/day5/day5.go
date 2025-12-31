@@ -51,9 +51,10 @@ func main() {
 	})
 	slices.Sort(ingredients)
 
-	//result := part1(ranges, ingredients)
-	result := part2(ranges)
-	fmt.Println(result)
+	fmt.Print("Part1: ")
+	fmt.Println(part1(ranges, ingredients))
+	fmt.Print("Part2: ")
+	fmt.Println(part2(ranges))
 
 	if err := scanner.Err(); err != nil {
 		log.Fatal(err)
