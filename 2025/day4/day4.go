@@ -30,11 +30,21 @@ func main() {
 
 	m := len(grid)
 	n := len(grid[0])
+	directions := [][]int{
+		{0, 1},
+		{1, 0},
+		{0, -1},
+		{-1, 0},
+		{1, 1},
+		{1, -1},
+		{-1, 1},
+		{-1, -1},
+	}
 	result := 0
 	for i := range m {
 		for j := range n {
-			if string(grid[i][j]) == "@" && canAccess(i, j, m, n, grid) {
-				result += countRemoved(i, j, m, n, &grid)
+			if string(grid[i][j]) == "@" && canAccess(i, j, m, n, grid, directions) {
+				result += countRemoved(i, j, m, n, &grid, directions)
 			}
 		}
 	}
@@ -45,18 +55,7 @@ func main() {
 	}
 }
 
-func countRemoved(i int, j int, m int, n int, grid *[]string) int {
-	directions := [][]int{
-		{0, 1},
-		{1, 0},
-		{0, -1},
-		{-1, 0},
-		{1, 1},
-		{1, -1},
-		{-1, 1},
-		{-1, -1},
-	}
-
+func countRemoved(i int, j int, m int, n int, grid *[]string, directions [][]int) int {
 	(*grid)[i] = (*grid)[i][:j] + "." + (*grid)[i][j+1:]
 	removed := 1
 	for _, dir := range directions {
@@ -65,26 +64,15 @@ func countRemoved(i int, j int, m int, n int, grid *[]string) int {
 		nextI := i + iChg
 		nextJ := j + jChg
 		if 0 <= nextI && nextI < m && 0 <= nextJ && nextJ < n {
-			if string((*grid)[nextI][nextJ]) == "@" && canAccess(nextI, nextJ, m, n, *grid) {
-				removed += countRemoved(nextI, nextJ, m, n, grid)
+			if string((*grid)[nextI][nextJ]) == "@" && canAccess(nextI, nextJ, m, n, *grid, directions) {
+				removed += countRemoved(nextI, nextJ, m, n, grid, directions)
 			}
 		}
 	}
 	return removed
 }
 
-func canAccess(i int, j int, m int, n int, grid []string) bool {
-	directions := [][]int{
-		{0, 1},
-		{1, 0},
-		{0, -1},
-		{-1, 0},
-		{1, 1},
-		{1, -1},
-		{-1, 1},
-		{-1, -1},
-	}
-
+func canAccess(i int, j int, m int, n int, grid []string, directions [][]int) bool {
 	numPapers := 0
 	for _, dir := range directions {
 		iChg := dir[0]
