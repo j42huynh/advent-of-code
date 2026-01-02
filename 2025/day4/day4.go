@@ -40,6 +40,30 @@ func main() {
 		{-1, 1},
 		{-1, -1},
 	}
+
+	fmt.Print("Part1: ")
+	fmt.Println(part1(m, n, grid, directions))
+	fmt.Print("Part2: ")
+	fmt.Println(part2(m, n, grid, directions))
+
+	if err := scanner.Err(); err != nil {
+		log.Fatal(err)
+	}
+}
+
+func part1(m int, n int, grid []string, directions [][]int) int {
+	result := 0
+	for i := range m {
+		for j := range n {
+			if string(grid[i][j]) == "@" && canAccess(i, j, m, n, grid, directions) {
+				result += 1
+			}
+		}
+	}
+	return result
+}
+
+func part2(m int, n int, grid []string, directions [][]int) int {
 	result := 0
 	for i := range m {
 		for j := range n {
@@ -48,11 +72,7 @@ func main() {
 			}
 		}
 	}
-	fmt.Println(result)
-
-	if err := scanner.Err(); err != nil {
-		log.Fatal(err)
-	}
+	return result
 }
 
 func countRemoved(i int, j int, m int, n int, grid *[]string, directions [][]int) int {
