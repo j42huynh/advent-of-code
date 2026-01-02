@@ -23,37 +23,77 @@ func main() {
 	defer file.Close()
 
 	scanner := bufio.NewScanner(file)
-	result := 0
-	start := 50
+	rotations := []string{}
 	for scanner.Scan() {
 		line := scanner.Text()
-
-		direction := line[:1]
-		num, err := strconv.Atoi(line[1:])
-		if err != nil {
-			log.Fatal(err)
-			return
-		}
-
-		next_start, clicks := applyRotation(start, direction, num)
-		result += clicks
-		start = next_start
+		rotations = append(rotations, line)
 	}
 
-	fmt.Println(result)
+	fmt.Print("Part1: ")
+	fmt.Println(part1(rotations))
+	fmt.Print("Part2: ")
+	fmt.Println(part2(rotations))
 
 	if err := scanner.Err(); err != nil {
 		log.Fatal(err)
 	}
 }
 
+func getInt(numStr string) int {
+	num, err := strconv.Atoi(numStr)
+	if err != nil {
+		log.Fatal(err)
+		return 0
+	}
+	return num
+}
+
+func part1(rotations []string) int {
+	dialMax := 100
+	result := 0
+	start := 50
+	for _, rotation := range rotations {
+		direction := rotation[:1]
+		num := getInt(rotation[1:])
+
+		switch direction {
+		case "L":
+			start -= num
+		case "R":
+			start += num
+		default:
+			log.Fatal("invalid direction")
+			return 0
+		}
+
+		if start%dialMax == 0 {
+			result += 1
+		}
+	}
+	return result
+}
+
+func part2(rotations []string) int {
+	result := 0
+	start := 50
+	for _, rotation := range rotations {
+		direction := rotation[:1]
+		num := getInt(rotation[1:])
+
+		nextStart, clicks := applyRotation(start, direction, num)
+		result += clicks
+		start = nextStart
+	}
+	return result
+}
+
 func applyRotation(start int, direction string, num int) (int, int) {
-	dial_max := 100
-	clicks := num / dial_max
-	to_add := num % dial_max
+	dialMax := 100
+	clicks := num / dialMax
+	toAdd := num % dialMax
 	sign := 0
 
-	if to_add == 0 {
+	if toAdd == 0 {
 		return start, clicks
 	}
 
@@ -67,18 +107,18 @@ func applyRotation(start int, direction string, num int) (int, int) {
 		return 0, 0
 	}
 
-	started_at_zero := start == 0
-	start += sign * to_add
-	if start == 0 && !started_at_zero {
+	startedAtZero := start == 0
+	start += sign * toAdd
+	if start == 0 && !startedAtZero {
 		clicks += 1
 	} else if start < 0 {
-		if !started_at_zero {
+		if !startedAtZero {
 			clicks += 1
 		}
-		start += dial_max
-	} else if start >= dial_max {
+		start += dialMax
+	} else if start >= dialMax {
 		clicks += 1
-		start -= dial_max
+		start -= dialMax
 	}
 
 	return start, clicks
